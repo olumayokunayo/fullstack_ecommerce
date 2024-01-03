@@ -24,6 +24,7 @@ const productValidation = (data) => {
     description: Joi.string().required(),
     category: Joi.string().required(),
     price: Joi.number().required(),
+    stockQuantity: Joi.number().required(),
   });
   return Schema.validate(data);
 };
