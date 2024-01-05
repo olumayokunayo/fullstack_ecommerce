@@ -2,7 +2,6 @@ const verifyToken = require("./verifyToken");
 const { productValidation } = require("../validation");
 const Product = require("../models/product");
 const { default: mongoose } = require("mongoose");
-const { route } = require("./product");
 const router = require("express").Router();
 
 // post product _ admin only
@@ -210,6 +209,52 @@ router.get("/filter/search", async (req, res) => {
       status: "Success",
       length: results.length,
       data: results,
+    });
+  } catch (error) {
+    res.status(200).json({
+      status: "Fail",
+      message: error.message,
+    });
+  }
+});
+// product stock level __ admin
+router.get("/:productId/stock", verifyToken, async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    if (!product)
+      return res.status(400).json({
+        status: "Fail",
+        message: "Product not found.",
+      });
+    const stockLevel = product.stockQuantity;
+    res.status(200).json({
+      status: "Success",
+      data: stockLevel,
+    });
+  } catch (error) {
+    res.status(200).json({
+      status: "Fail",
+      message: error.message,
+    });
+  }
+});
+// update product stock level __ admin
+router.patch("/:productId/stock", verifyToken, async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    if (!product)
+      return res.status(400).json({
+        status: "Fail",
+        message: "Product not found.",
+      });
+    const { stockQuantity } = req.body;
+    product.stockQuantity = stockQuantity;
+    await product.save();
+    res.status(200).json({
+      status: "Success",
+      data: stockQuantity,
     });
   } catch (error) {
     res.status(200).json({

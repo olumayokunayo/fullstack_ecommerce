@@ -28,7 +28,15 @@ const productValidation = (data) => {
   });
   return Schema.validate(data);
 };
+const reviewValidation = (data) => {
+  const Schema = Joi.object({
+    rating: Joi.number().required(),
+    comment: Joi.string().required(),
+  });
+  return Schema.validate(data);
+};
 
 module.exports.signupValidation = signupValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.productValidation = productValidation;
+module.exports.reviewValidation = reviewValidation;
